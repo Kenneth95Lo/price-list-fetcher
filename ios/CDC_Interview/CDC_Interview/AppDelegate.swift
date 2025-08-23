@@ -24,6 +24,10 @@ class AppDelegate: RCTAppDelegate {
         
         return true
     }
+    
+    override func sourceURL(for bridge: RCTBridge) -> URL? {
+        self.bundleURL()
+    }
 
     override func bundleURL() -> URL? {
     #if DEBUG
