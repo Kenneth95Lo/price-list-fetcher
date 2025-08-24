@@ -10,7 +10,7 @@ protocol Fetchable {
     func fetchPriceList() async throws -> [Result]
 }
 
-class USDPriceListService: Fetchable {
+class USDPriceListService: NSObject, Fetchable {
     
     private let dependency: Dependency
     private let provider: USDPriceUseCase
@@ -25,7 +25,7 @@ class USDPriceListService: Fetchable {
     }
 }
 
-class EuroPriceListService: Fetchable {
+class EuroPriceListService: NSObject, Fetchable {
     
     private let dependency: Dependency
     private let provider: AllPriceUseCase
