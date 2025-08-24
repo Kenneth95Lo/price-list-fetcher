@@ -10,8 +10,8 @@ import RxSwift
 
 @objc public class RNNativeInterviewModuleImpl: NSObject {
 
-    private let usdService: USDPriceListService
-    private let euroService: EuroPriceListService
+    private let usdService: any Fetchable
+    private let euroService: any Fetchable
     
     @objc init(usdPriceListService: USDPriceListService, euroPriceListService: EuroPriceListService) {
         self.usdService = usdPriceListService
