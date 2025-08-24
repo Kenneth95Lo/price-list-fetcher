@@ -23,21 +23,21 @@ RCT_EXPORT_MODULE(NativeInterviewModule);
     return self;
 }
 
--(void)fetchPriceList:(Boolean)isEureSuported withResolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
+-(void)fetchPriceList:(NSDictionary *)options resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject {
     // TODO: Implement price list fetching
     // 1. use allPriceUsecase or usdPriceUseCase to fetch data
     // 2. if feature flag .supportEUR is true, use fetchAllPriceList else use fetchUSDPriceList
     // 3. success: return response of allPriceList or usdPriceList
     
-    [__impl fetchPriceListWithIsEuroSupported:isEureSuported handler:^(NSArray * prices, NSError * error) {
+    [__impl fetchPriceListWithOptions:options handler:^(NSArray * array, NSError * error) {
         if (error != nil) {
-            reject(@"FETCH ERROR", error.localizedDescription, nil);
+            reject(@"error", nil ,error);
         } else {
-            resolve(prices);
+            resolve(array);
         }
+    } completionHandler:^{
     }];
-
-    reject(@"NOT_IMPLEMENTED", @"Price list fetching not implemented", nil);
+    
 }
 
 @end
