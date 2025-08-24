@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,17 +18,35 @@ interface PriceData {
 }
 
 const PriceList: React.FC = () => {
-  const {priceList} = useFetchPriceList()
+  const { isEURSupported } = useisEURSupportedFlagChange();
+  const options = useMemo(() => ({ isEuroSupported: isEURSupported ?? false }), [isEURSupported]);
+  const { priceList, error, isLoading } = useFetchPriceList(options);
   const [cryptoData, setCryptoData] = useState<CryptoCurrency[]>([]);
   const [filteredData, setFilteredData] = useState<CryptoCurrency[]>([]);
 
   useEffect(() => {
-    console.log('priceList', priceList)
-    
     setCryptoData(priceList);
     setFilteredData(priceList);
-    
+
   }, [priceList]);
+
+  const renderErrorState = useCallback(() => {
+    if (error) {
+      return (
+        <View style={{ padding: 10, backgroundColor: 'pink' }}>
+          <Text style={{ color: 'red' }}>Error: {error.message}</Text>
+        </View>
+      )
+    }
+    return null;
+  }, [error]);
+
+  const renderLoaddingState = useCallback(() => {
+    if (isLoading) {
+      return <View><Text>Loading...</Text></View>
+    }
+    return null;
+  }, [isLoading]);
 
   // Format the price based on its value
   const formatPrice = (price: number): string => {
@@ -44,29 +62,44 @@ const PriceList: React.FC = () => {
     }
   };
 
+  const renderEurPrice = (item: CryptoCurrency) => {
+    if (isEURSupported && item.eur !== undefined) {
+      return <Text style={styles.priceText}>EUR: {formatPrice(item.eur)}</Text>;
+    }
+    return null;
+  };
+
   // Render each cryptocurrency item
   const renderItem = ({ item }: { item: CryptoCurrency }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.nameText}>{item.name}</Text>
       <Text style={styles.priceText}>USD: {formatPrice(item.usd)}</Text>
       {/* // TODO: extend to show EUR price if EUR is available */}
+      {renderEurPrice(item)}
       <View style={styles.separator} />
     </View>
   );
 
+  const renderContent = () => {
+    if (!isLoading && !error) {
+      return (
+        <FlatList
+          data={filteredData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+        />
+      )
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      
-      {/* // TODO: Loading State */}
-      {/* // TODO: Error State */}
-      <FlatList
-        data={filteredData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        style={styles.list}
-        showsVerticalScrollIndicator={false}
-      />
+      {renderLoaddingState()}
+      {renderErrorState()}
+      {renderContent()}
     </SafeAreaView>
   );
 };

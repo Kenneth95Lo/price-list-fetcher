@@ -25,18 +25,44 @@ export const useisEURSupportedFlagChange = () => {
   }
 }
 
-export const useFetchPriceList = () => {
-  const {isEURSupported} = useisEURSupportedFlagChange()
+export const useFetchPriceList = (options: { [key: string]: string | number | boolean }) => {
   const [priceList, setPriceList] = useState<CryptoCurrency[]>([])
+  const [error, setError] = useState<Error | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  // TODO: Implement price list fetching
-  // 1. Create a memoized fetch function
-  // 2. Handle both USD and EUR price formats
-  // 5. Optimize re-renders using proper hooks
+  useEffect(() => {
+    let isMounted = true
+    setIsLoading(true)
+    setError(null)
 
-  return {
-    priceList,
-  }
+    NativeInterviewModule?.fetchPriceList(options)
+      .then((res) => {
+        if (!isMounted) return
+        switch (res?.type) {
+          case 'success':
+            setPriceList(res.data as CryptoCurrency[])
+            break
+          case 'error':
+            setError(res.error)
+            break
+          default:
+            setError(new Error('Unknown response type'))
+        }
+        setIsLoading(false)
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setError(err)
+          setIsLoading(false)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [options])
+
+  return { priceList, error, isLoading }
 }
 
 export interface CryptoCurrency {
