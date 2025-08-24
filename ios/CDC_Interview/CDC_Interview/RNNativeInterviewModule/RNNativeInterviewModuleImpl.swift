@@ -10,8 +10,8 @@ import RxSwift
 
 @objc public class RNNativeInterviewModuleImpl: NSObject {
 
-    let allPriceProvider: AllPriceUseCase
-    let usdPriceProvider: USDPriceUseCase
+    private let allPriceProvider: AllPriceUseCase
+    private let usdPriceProvider: USDPriceUseCase
 
     public override init() {
         let dependency = Dependency.shared
