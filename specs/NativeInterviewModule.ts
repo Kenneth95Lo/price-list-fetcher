@@ -9,9 +9,11 @@ type Result<T, E = Error> =
   | {type: 'success'; data: T}
   | {type: 'error'; error: E}
 
+type Dictionary = {[key: string]: string | number | boolean}
+
 export interface Spec extends TurboModule {
   // Example: fetch Data, Feel free to change the function name and parameters
-  fetchPriceList(options: {[key: string]: string | number | boolean}): Promise<Result<Object, Error>>
+  fetchPriceList(options: Dictionary): Promise<Result<Object, Error>>
 }
 
 // - Turbo Module
