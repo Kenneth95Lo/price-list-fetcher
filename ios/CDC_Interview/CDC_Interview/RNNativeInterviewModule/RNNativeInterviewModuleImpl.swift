@@ -10,8 +10,17 @@ import RxSwift
 
 @objc public class RNNativeInterviewModuleImpl: NSObject {
 
-    public override init() {
+    private let usdService: USDPriceListService
+    private let euroService: EuroPriceListService
+    
+    @objc init(usdPriceListService: USDPriceListService, euroPriceListService: EuroPriceListService) {
+        self.usdService = usdPriceListService
+        self.euroService = euroPriceListService
         super.init()
+    }
+    
+    public override convenience init() {
+        self.init(usdPriceListService: USDPriceListService(),euroPriceListService: EuroPriceListService())
     }
     
     public typealias FetchPriceOptions = [String: Any]
@@ -19,10 +28,10 @@ import RxSwift
     @objc
     public func fetchPriceList(options: FetchPriceOptions, handler: @escaping (NSArray?, NSError?) -> Void) async {
         
-        var fetchable: any Fetchable = USDPriceListService()
+        var fetchable: any Fetchable = self.usdService
         
         if (options["isEuroSupported"] != nil && options["isEuroSupported"] as! Bool) {
-            fetchable = EuroPriceListService()
+            fetchable = self.euroService
         }
         
         do {
