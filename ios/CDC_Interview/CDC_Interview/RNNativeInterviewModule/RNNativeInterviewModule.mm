@@ -31,9 +31,9 @@ RCT_EXPORT_MODULE(NativeInterviewModule);
     
     [__impl fetchPriceListWithOptions:options handler:^(NSArray * array, NSError * error) {
         if (error != nil) {
-            reject(@"error", nil ,error);
+            reject(@"error", nil, error);
         } else {
-            resolve(array);
+            resolve(@{@"type": @"success", @"data": array});
         }
     } completionHandler:^{
     }];
