@@ -18,6 +18,15 @@ export const useisEURSupportedFlagChange = () => {
     // 1. Subscribe to feature flag changes
     // 2. Update state when flag changes
     // 3. Clean up subscription on unmount
+    const featureFlagSubscription = InterviewEventsEmitter.addListener(
+      FEATUREFLAG_DATA_CHANGED_EVENT, (data: FeatureFlagMap) => {
+        setIsEURSupported(data.supportEUR)
+      }
+    )
+
+    return () => {
+      featureFlagSubscription.remove()
+    }
   }, [])
 
   return {
