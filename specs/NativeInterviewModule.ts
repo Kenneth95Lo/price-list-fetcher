@@ -11,8 +11,7 @@ type Result<T, E = Error> =
 
 export interface Spec extends TurboModule {
   // Example: fetch Data, Feel free to change the function name and parameters
-  fetchPriceList(isEURSupported: boolean
-  ): Promise<Result<Object, Error>>
+  fetchPriceList(options: {[key: string]: string | number | boolean}): Promise<Result<Object, Error>>
 }
 
 // - Turbo Module
