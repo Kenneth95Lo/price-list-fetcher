@@ -62,7 +62,7 @@ const PriceList: React.FC = () => {
     }
   };
 
-  const renderEurPrice = (item: CryptoCurrency) => {
+  const renderEuroPrice = (item: CryptoCurrency) => {
     if (isEURSupported && item.eur !== undefined) {
       return <Text style={styles.priceText}>EUR: {formatPrice(item.eur)}</Text>;
     }
@@ -70,15 +70,15 @@ const PriceList: React.FC = () => {
   };
 
   // Render each cryptocurrency item
-  const renderItem = ({ item }: { item: CryptoCurrency }) => (
+  const renderItem = useCallback(({ item }: { item: CryptoCurrency }) => (
     <View style={styles.itemContainer}>
       <Text style={styles.nameText}>{item.name}</Text>
       <Text style={styles.priceText}>USD: {formatPrice(item.usd)}</Text>
       {/* // TODO: extend to show EUR price if EUR is available */}
-      {renderEurPrice(item)}
+      {renderEuroPrice(item)}
       <View style={styles.separator} />
     </View>
-  );
+  ), [isEURSupported]);
 
   const renderContent = () => {
     if (!isLoading && !error) {
@@ -89,6 +89,9 @@ const PriceList: React.FC = () => {
           keyExtractor={(item) => item.id.toString()}
           style={styles.list}
           showsVerticalScrollIndicator={false}
+          initialNumToRender={10}
+          maxToRenderPerBatch={5}
+          windowSize={11}
         />
       )
     }
@@ -143,4 +146,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PriceList; 
+export default React.memo(PriceList); 
